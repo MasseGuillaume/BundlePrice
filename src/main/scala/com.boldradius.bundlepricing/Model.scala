@@ -1,3 +1,5 @@
+package com.boldradius.bundlepricing
+
 object BundlePricing {
   type Cost = BigDecimal
   type Quantity = Int
@@ -7,10 +9,6 @@ object BundlePricing {
   case object Apple extends GroceryProduct
   case object Bread extends GroceryProduct
   case object Margarine extends GroceryProduct
-
-  def apple: GroceryProduct = Apple
-  def bread: GroceryProduct = Bread
-  def margarine: GroceryProduct = Margarine
 
   trait PricePromotion
   case class BulkPrice(bulkSize: Int, product: GroceryProduct, price: Cost) extends PricePromotion
@@ -35,6 +33,6 @@ object BundlePricing {
         unitPrices.keys
       Left(s"""Not all products unit cost are defined. Missing: ${missings.mkString(", ")}""")
     }
-    else Right(unitCosts.sum)    
+    else Right(unitCosts.sum)
   }
 }

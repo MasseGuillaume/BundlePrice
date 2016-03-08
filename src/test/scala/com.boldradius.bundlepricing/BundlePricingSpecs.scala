@@ -1,3 +1,5 @@
+package com.boldradius.bundlepricing
+
 class BundlePricingSpecs extends org.specs2.Specification { def is = s2"""
   BundlePricingSpecs
     a naive implementation sum the unit cost x price    $naiveImplementation
