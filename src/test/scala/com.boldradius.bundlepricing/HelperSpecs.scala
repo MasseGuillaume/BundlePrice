@@ -18,6 +18,14 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
     bagAdd
       empty $bagAddEmpty
       bag with one element $bagAddOne
+    fullOuterJoin
+    toBag
+    contains
+      disctinct $containsDisctinct
+      intersect $containsIntersect
+      contained $containsContained
+      nested $containsNested
+      size differs $containsSizeDiffer
 """
 
   val left = Map(
@@ -93,5 +101,25 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
 
   def bagAddOne = {
     bagAdd(Map('a -> 1), 'a) ==== Map('a -> 2)
+  }
+
+  def containsDisctinct = {
+    bagContains(Map('a -> 1), Map('b -> 2)) === false
+  }
+
+  def containsIntersect = {
+    bagContains(Map('a -> 1, 'b -> 1), Map('a -> 1, 'c -> 1)) === false
+  }
+
+  def containsContained = {
+    bagContains(Map('a -> 1, 'b -> 1), Map('a -> 1)) === true
+  }
+
+  def containsNested = {
+    bagContains(Map('a -> 1), Map('a -> 1, 'b -> 1)) === false
+  }
+
+  def containsSizeDiffer = {
+    bagContains(Map('a -> 1), Map('a -> 2)) === false
   }
 }

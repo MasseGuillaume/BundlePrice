@@ -11,7 +11,7 @@ case class CartState(items: Cart, paid: Cart = Map(), runningTotal: Cost = BigDe
 case class Bundle(selection: Selection[Product], discount: Discount) {
   def apply(state: CartState): Set[CartState] = {
     selection.kselections
-      .filter(combination => combination.forall(state.items.contains))
+      .filter(combination => bagContains(state.items, toBag(combination)))
       .map(combination => discount(combination, state))
   }
 }
