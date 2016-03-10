@@ -24,4 +24,12 @@ package object bundlepricing extends SelectionSyntax {
       }
     )
   }
+
+  def bagRemove[K](m: Map[K, Int], k: K): Map[K, Int] = {
+    m.get(k) match {
+      case None => m
+      case Some(1) => m - k
+      case Some(n) => m.updated(k, n - 1)
+    }
+  }
 }

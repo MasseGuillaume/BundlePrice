@@ -11,6 +11,10 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
     upsert
       insert if key is not found $upsertInsertEmpty
       update if key is found $upsertUpate
+    bagRemove
+      empty $bagRemoveEmpty
+      bag with one element k $bagRemoveOne
+      bag with two elements k $bagRemoveTwo
 """
 
   val left = Map(
@@ -64,5 +68,18 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
   def upsertUpate = {
     upsert(ma)('b, _ + 1, 1) ====
       Map('a -> 1, 'b -> 1)
+  }
+
+  val emptyBag = Map.empty[Symbol, Int]
+  def bagRemoveEmpty = {
+    bagRemove(emptyBag, 'a) ==== emptyBag
+  }
+
+  def bagRemoveOne = {
+    bagRemove(Map('a -> 1), 'a) ==== emptyBag
+  }
+
+  def bagRemoveTwo = {
+    bagRemove(Map('a -> 2), 'a) ==== Map('a -> 1)
   }
 }

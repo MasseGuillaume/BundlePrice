@@ -29,7 +29,7 @@ sealed trait Discount {
 case class Free(product: Product) extends Discount {
   def apply(selected: Bag[Product], state: CartState): CartState = {
     state.copy(
-      items = state.items - product,
+      items = bagRemove(state.items, product),
       paid = upsert(state.paid)(product, _ + 1, 1)
     )
   }
@@ -38,7 +38,7 @@ case class Free(product: Product) extends Discount {
 case class Price(cost: BigDecimal) extends Discount {
   def apply(selected: Bag[Product], state: CartState): CartState = {
     state.copy(
-      items = selected.foldLeft(state.items)(_ - _),
+      items = selected.foldLeft(state.items)(bagRemove),
       paid = selected.foldLeft(state.paid){ case (paid, item) =>
         upsert(paid)(item, _ + 1, 1)
       },
