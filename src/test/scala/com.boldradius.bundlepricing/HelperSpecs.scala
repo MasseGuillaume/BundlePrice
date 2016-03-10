@@ -15,6 +15,9 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
       empty $bagRemoveEmpty
       bag with one element k $bagRemoveOne
       bag with two elements k $bagRemoveTwo
+    bagAdd
+      empty $bagAddEmpty
+      bag with one element $bagAddOne
 """
 
   val left = Map(
@@ -71,6 +74,7 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
   }
 
   val emptyBag = Map.empty[Symbol, Int]
+
   def bagRemoveEmpty = {
     bagRemove(emptyBag, 'a) ==== emptyBag
   }
@@ -81,5 +85,13 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
 
   def bagRemoveTwo = {
     bagRemove(Map('a -> 2), 'a) ==== Map('a -> 1)
+  }
+
+  def bagAddEmpty = {
+    bagAdd(emptyBag, 'a) ==== Map('a -> 1)
+  }
+
+  def bagAddOne = {
+    bagAdd(Map('a -> 1), 'a) ==== Map('a -> 2)
   }
 }
