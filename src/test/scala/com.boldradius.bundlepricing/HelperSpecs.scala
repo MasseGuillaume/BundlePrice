@@ -8,6 +8,9 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
       left empty $leftEmpty
       right empty $rightEmpty
       empty empty $emptyEmpty
+    upsert
+      insert if key is not found $upsertInsertEmpty
+      update if key is found $upsertUpate
 """
 
   val left = Map(
@@ -49,5 +52,17 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
 
   def emptyEmpty = {
     innerJoin(empty, empty)((_, _)) ==== Map()
+  }
+
+  val ma = Map('a -> 1)
+
+  def upsertInsertEmpty = {
+    upsert(ma)('a, _ + 1, 1) ====
+      Map('a -> 2)
+  }
+
+  def upsertUpate = {
+    upsert(ma)('b, _ + 1, 1) ====
+      Map('a -> 1, 'b -> 1)
   }
 }

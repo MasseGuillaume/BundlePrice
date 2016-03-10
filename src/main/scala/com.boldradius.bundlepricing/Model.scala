@@ -25,9 +25,6 @@ object BundlePricing {
       }.flatten
     
     if(unitCosts.size != cart.size) {
-      println(cart.map{ case (_, product) => product}.toSet)
-      println(unitPrices.keys)
-
       val missings = 
         cart.map{ case (_, product) => product}.toSet --
         unitPrices.keys
