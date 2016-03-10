@@ -19,7 +19,14 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
       empty $bagAddEmpty
       bag with one element $bagAddOne
     fullOuterJoin
+      left empty $fullOuterJoinLeftEmpty
+      right empty $fullOuterJoinRightEmpty
+      empty empty $fullOuterJoinEmptyEmpty
+      example $fullOuterJoinExample
     toBag
+      empty $toBagEmpty
+      singles $toBagSingles
+      example $toBagExample
     contains
       disctinct $containsDisctinct
       intersect $containsIntersect
@@ -103,23 +110,63 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
     bagAdd(Map('a -> 1), 'a) ==== Map('a -> 2)
   }
 
+  val fullLeft = Map(
+    'a -> "la",
+    'b -> "lb",
+    'c -> "lc"
+  )
+
+  val fullRight = Map(
+    'b -> "rb",
+    'c -> "rc",
+    'd -> "rd"
+  )
+
+  def fullOuterJoinLeftEmpty = {
+    fullOuterJoin(empty, fullRight)(_ + _)(l => l)(r => r) ==== fullRight
+  }
+  def fullOuterJoinRightEmpty = {
+    fullOuterJoin(fullLeft, empty)(_ + _)(l => l)(r => r) ==== fullLeft
+  }
+  def fullOuterJoinEmptyEmpty = {
+    fullOuterJoin(empty, empty)(_ + _)(l => l)(r => r) ==== empty
+  }
+  def fullOuterJoinExample = {
+    fullOuterJoin(fullLeft, fullRight)(_ + _)(l => l)(r => r) ==== Map(
+      'a -> "la",
+      'b -> "lbrb",
+      'c -> "lcrc",
+      'd -> "rd"
+    )
+  }
+
+  def toBagEmpty = {
+    toBag(List.empty[Symbol]) ==== Map.empty[Symbol, Int]
+  }
+  def toBagSingles = {
+    toBag(List('a, 'b, 'c)) ==== Map('a -> 1, 'b -> 1, 'c -> 1)
+  }
+  def toBagExample = {
+    toBag(List('a, 'b, 'c, 'a, 'b, 'c, 'b)) ==== Map('a -> 2, 'b -> 3, 'c -> 2)
+  }
+
   def containsDisctinct = {
-    bagContains(Map('a -> 1), Map('b -> 2)) === false
+    bagContains(Map('a -> 1), Map('b -> 2)) ==== false
   }
 
   def containsIntersect = {
-    bagContains(Map('a -> 1, 'b -> 1), Map('a -> 1, 'c -> 1)) === false
+    bagContains(Map('a -> 1, 'b -> 1), Map('a -> 1, 'c -> 1)) ==== false
   }
 
   def containsContained = {
-    bagContains(Map('a -> 1, 'b -> 1), Map('a -> 1)) === true
+    bagContains(Map('a -> 1, 'b -> 1), Map('a -> 1)) ==== true
   }
 
   def containsNested = {
-    bagContains(Map('a -> 1), Map('a -> 1, 'b -> 1)) === false
+    bagContains(Map('a -> 1), Map('a -> 1, 'b -> 1)) ==== false
   }
 
   def containsSizeDiffer = {
-    bagContains(Map('a -> 1), Map('a -> 2)) === false
+    bagContains(Map('a -> 1), Map('a -> 2)) ==== false
   }
 }
