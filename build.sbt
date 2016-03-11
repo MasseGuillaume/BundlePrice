@@ -31,5 +31,5 @@ scalacOptions in (Compile, console) --= Seq(
 libraryDependencies += "org.specs2" %% "specs2-core" % "3.6.4" % "test"
 
 coverageEnabled := true
-// sbt coverageReport
+// sbt ";test ;coverageReport"
 // chromium target/scala-2.11/scoverage-report/index.html
