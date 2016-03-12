@@ -48,15 +48,15 @@ class HelperSpecs extends org.specs2.Specification { def is = s2"""
   val empty = Map.empty[Symbol, String]
 
   def leftEmpty = {
-    innerJoin(empty, right)((_, _)) ==== Map()
+    innerJoin(empty, right)(_ + _) ==== empty
   }
 
   def rightEmpty = {
-    innerJoin(left, empty)((_, _)) ==== Map()
+    innerJoin(left, empty)(_ + _) ==== empty
   }
 
   def emptyEmpty = {
-    innerJoin(empty, empty)((_, _)) ==== Map()
+    innerJoin(empty, empty)(_ + _) ==== empty
   }
 
   val ma = Map('a -> 1)

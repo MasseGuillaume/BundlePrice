@@ -1,6 +1,6 @@
 package com.boldradius.bundlepricing
 
-case class CartState(
+final case class CartState(
   items: Bag[Product],
   paid: Bag[Product] = Bag(),
   runningTotal: Cost = BigDecimal(0)) {
@@ -11,7 +11,7 @@ case class CartState(
 }
 
 // Select some items from the cart and apply a discount
-case class Bundle(selection: Selection[Product], discount: Discount) {
+final case class Bundle(selection: Selection[Product], discount: Discount) {
   def apply(state: CartState): Set[CartState] = {
     selection.kselections
       .filter(combination => state.items.contains(combination))
@@ -23,7 +23,7 @@ sealed trait Discount {
   def apply(selected: Bag[Product], state: CartState): CartState
 }
 
-case class Free(product: Product) extends Discount {
+final case class Free(product: Product) extends Discount {
   def apply(selected: Bag[Product], state: CartState): CartState = {
     state.copy(
       items = state.items - product,
@@ -32,7 +32,7 @@ case class Free(product: Product) extends Discount {
   }
 }
 
-case class Price(cost: BigDecimal) extends Discount {
+final case class Price(cost: BigDecimal) extends Discount {
   def apply(selected: Bag[Product], state: CartState): CartState = {
     state.copy(
       items = state.items -- selected,

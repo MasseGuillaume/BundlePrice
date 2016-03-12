@@ -7,7 +7,7 @@ object Bag {
   def apply[T](values: T*): Bag[T] = Bag.fromList(values.toList)
 }
 
-case class Bag[T](values: Map[T, Int]) {
+final case class Bag[T](values: Map[T, Int]) {
   def isEmpty = values.isEmpty
   def contains(bag: Bag[T]): Boolean =
     fullOuterJoin(values, bag.values)(_ >= _)(_ => true)(_ => false).values.forall(identity)

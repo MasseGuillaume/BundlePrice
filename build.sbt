@@ -30,6 +30,8 @@ scalacOptions in (Compile, console) --= Seq(
 
 libraryDependencies += "org.specs2" %% "specs2-core" % "3.6.4" % "test"
 
+wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments)
+
 coverageEnabled := true
 // sbt ";test ;coverageReport"
 // chromium target/scala-2.11/scoverage-report/index.html

@@ -1,5 +1,6 @@
 package com.boldradius.bundlepricing
 
+@SuppressWarnings(Array("org.brianmckenna.wartremover.warts.NonUnitStatements"))
 class AlgorithmSpecs extends org.specs2.mutable.Specification {
 
   "Bundle Pricing Algorithms" >> {
