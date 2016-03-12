@@ -2,43 +2,74 @@ package com.boldradius.bundlepricing
 
 class AlgorithmSpecs extends org.specs2.mutable.Specification {
 
-  val cart = Map(
-    'a -> 5,
-    'b -> 2,
-    'c -> 3
-  )
-  val unitCost = Map(
-    'a -> BigDecimal(1),
-    'b -> BigDecimal(3),
-    'c -> BigDecimal(3)
-  )
-  val bundles = Set(
-    Bundle('a & 'b & 'c, Free('a)),
-    Bundle('a & 'b, Price(BigDecimal(3))),
-    Bundle(2 * ('a | 'b | 'c), Price(BigDecimal(5)))
-  )
-  val cartUnitCost = CartState(cart).total(unitCost)
+  "Bundle Pricing Algorithms" >> {
+    val unitCost = Map(
+      'a -> BigDecimal(1),
+      'b -> BigDecimal(3),
+      'c -> BigDecimal(3)
+    )
+    val bundles = Set(
+      Bundle('a & 'b & 'c, Free('a)),
+      Bundle('a & 'a & 'b & 'b, Price(BigDecimal(7))),
+      Bundle(2 * ('a | 'b | 'c), Price(BigDecimal(5)))
+    )
+    val smallCart = Bag.fromMap(Map(
+      'a -> 8,
+      'b -> 2,
+      'c -> 3
+    ))
+    val smallCartUnitCost = CartState(smallCart).total(unitCost)
+    s"small cart (Cost: $smallCartUnitCost)" >> {
+      "Exhaustive" >> {
+        val costExhaustive = Exhaustive.minimizeCost(
+          smallCart,
+          unitCost,
+          bundles
+        )
+        s"Cost: $costExhaustive" >> {
+          costExhaustive must be_<(smallCartUnitCost)  
+        }      
+      }
 
-  s"Bundle Pricing Algorithms (Cost: $cartUnitCost)" >> {
-    "Exhaustive" >> {
-      val costExhaustive = Exhaustive.minimizeCost(
-        cart,
-        unitCost,
-        bundles
-      )
-      s"Cost: $costExhaustive" >> {
-        costExhaustive must be_<(cartUnitCost)  
-      }      
+      "GRAB" >> {
+        val costGRAB = GRAB.minimizeCost(
+          smallCart,
+          unitCost,
+          bundles   
+        ) 
+        s"Cost: $costGRAB" >> {
+          costGRAB must be_<(smallCartUnitCost)  
+        }
+      }
     }
 
-    "GRAB" >> {
-      val costGRAB = GRAB.minimizeCost(
-        cart,
-        unitCost,
-        bundles   
-      ) 
-      s"Cost: $costGRAB" >> {
-        costGRAB must be_<(cartUnitCost)  
+    val largeCart = Bag.fromMap(Map(
+      'a -> 50,
+      'b -> 20,
+      'c -> 30
+    ))
+    val largeCartUnitCost = CartState(largeCart).total(unitCost)
+    s"large cart (Cost: $largeCartUnitCost)" >> {
+      // Does not terminate:
+      // "Exhaustive" >> {
+      //   val costExhaustive = Exhaustive.minimizeCost(
+      //     largeCart,
+      //     unitCost,
+      //     bundles
+      //   )
+      //   s"Cost: $costExhaustive" >> {
+      //     costExhaustive must be_<(smallCartUnitCost)  
+      //   }      
+      // }
+      "GRAB" >> {
+        val costGRAB = GRAB.minimizeCost(
+          largeCart,
+          unitCost,
+          bundles   
+        ) 
+        s"Cost: $costGRAB" >> {
+          costGRAB must be_<(largeCartUnitCost)  
+        }
       }
     }
   }

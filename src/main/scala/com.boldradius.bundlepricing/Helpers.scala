@@ -24,21 +24,4 @@ trait MapHelpers {
       }
     )
   }
-
-  def bagRemove[K](m: Map[K, Int], k: K): Map[K, Int] = {
-    m.get(k) match {
-      case None => m
-      case Some(1) => m - k
-      case Some(n) => m.updated(k, n - 1)
-    }
-  }
-
-  def bagAdd[K](m: Map[K, Int], k: K): Map[K, Int] =
-    upsert(m)(k, _ + 1, 1)
-
-  def toBag[K](xs: List[K]): Map[K, Int] =
-    xs.groupBy(identity).mapValues(_.size)
-
-  def bagContains[K](m1: Map[K, Int], m2: Map[K, Int]): Boolean = 
-    fullOuterJoin(m1, m2)(_ >= _)(_ => true)(_ => false).values.forall(identity)
 }

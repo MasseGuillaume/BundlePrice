@@ -8,15 +8,15 @@ class SelectionSpecs extends org.specs2.Specification { def is = s2"""
 
   def kSelectionAnd = {
     (2 * ('a & 'b)).kselections ==== Set(
-      List('a, 'b, 'a, 'b)
+      Bag('a, 'b, 'a, 'b)
     )
   }
   
   def kSelectionOr = {
     (2 * ('a | 'b | 'c)).kselections ==== Set(
-      List('a, 'a), List('a, 'b), List('a, 'c),
-      List('b, 'b), List('b, 'c),
-      List('c, 'c)
+      Bag('a, 'a), Bag('a, 'b), Bag('a, 'c),
+      Bag('b, 'b), Bag('b, 'c),
+      Bag('c, 'c)
     )
   }
 }

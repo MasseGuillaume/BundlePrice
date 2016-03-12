@@ -1,8 +1,11 @@
 package com.boldradius.bundlepricing
 
-case class CartState(items: Cart, paid: Cart = Map(), runningTotal: Cost = BigDecimal(0)) {
+case class CartState(
+  items: Bag[Product],
+  paid: Bag[Product] = Bag(),
+  runningTotal: Cost = BigDecimal(0)) {
   def total(unitCost: Map[Product, Cost]): Cost =
-    runningTotal + innerJoin(items, unitCost){ case (quantity, cost) =>
+    runningTotal + items.join(unitCost){ case (quantity, cost) =>
       cost * quantity
     }.values.sum
 }
@@ -11,7 +14,7 @@ case class CartState(items: Cart, paid: Cart = Map(), runningTotal: Cost = BigDe
 case class Bundle(selection: Selection[Product], discount: Discount) {
   def apply(state: CartState): Set[CartState] = {
     selection.kselections
-      .filter(combination => bagContains(state.items, toBag(combination)))
+      .filter(combination => state.items.contains(combination))
       .map(combination => discount(combination, state))
   }
 }
@@ -23,8 +26,8 @@ sealed trait Discount {
 case class Free(product: Product) extends Discount {
   def apply(selected: Bag[Product], state: CartState): CartState = {
     state.copy(
-      items = bagRemove(state.items, product),
-      paid = bagAdd(state.paid, product)
+      items = state.items - product,
+      paid = state.paid + product
     )
   }
 }
@@ -32,11 +35,11 @@ case class Free(product: Product) extends Discount {
 case class Price(cost: BigDecimal) extends Discount {
   def apply(selected: Bag[Product], state: CartState): CartState = {
     state.copy(
-      items = selected.foldLeft(state.items)(bagRemove),
-      paid = selected.foldLeft(state.paid)(bagAdd),
+      items = state.items -- selected,
+      paid = state.paid ++ selected,
       runningTotal = state.runningTotal + cost
     )
   }
 }
 
-// and many more ...
+// and more ...

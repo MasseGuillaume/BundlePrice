@@ -17,12 +17,12 @@ sealed trait Selection[T] {
   def *(n: Int): Selection[T]
   def kselections: Set[Bag[T]]
 }
-case class And[T](xs: Bag[T], k: Int = 1) extends Selection[T] {
+case class And[T](xs: List[T], k: Int = 1) extends Selection[T] {
   def *(x: Int): Selection[T] = copy(k = x)
 
   // 2 * (A & B) => ABAB
   def kselections: Set[Bag[T]] =
-    Set(List.fill(k)(xs).flatten)
+    Set(Bag.fromList(List.fill(k)(xs).flatten))
 
   def &(x: T) = And(x :: xs)
 }
@@ -32,8 +32,11 @@ case class Or[T](xs: Set[T], k: Int = 1) extends Selection[T] {
   def *(x: Int): Selection[T] = copy(k = x)
 
   // 2 * (A | B | C) => AA, AB, AC, BB, BC, CC
-  def kselections: Set[Bag[T]] =
-    List.fill(k)(xs).flatten.combinations(k).toSet
+  def kselections: Set[Bag[T]] = {
+    val sel: Set[List[T]] = List.fill(k)(xs).flatten.combinations(k).toSet
+
+    sel.map(Bag.fromList)
+  }
 
   def |(x: T) = Or(xs + x)
 }
