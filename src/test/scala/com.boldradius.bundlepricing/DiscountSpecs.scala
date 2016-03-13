@@ -4,6 +4,7 @@ class DiscountSpecs extends org.specs2.Specification { def is = s2"""
   A discount is a buisness rule to be applied on a selection of products
     the following discount strategies are implemented
       an arbitrary free product $free
+        a product selection can only be used once $freeOnce
       a fixed price $fixedPrice
     or selections will produce more permutations $orSelectionPrice
     a selection must always be satisfied to get a discount $selectionNotSatisfied
@@ -13,14 +14,34 @@ class DiscountSpecs extends org.specs2.Specification { def is = s2"""
     val bundle = Bundle('a & 'b & 'c, Free('a))
     val cart = CartState(Bag('a, 'a, 'b, 'c))
     
-    bundle(cart) ==== Set(CartState(Bag('b, 'a, 'c), Bag('a)))
+    bundle(cart) ==== Set(CartState(
+      items = Bag('b, 'a, 'c),
+      paid = Bag('a),
+      consummed = Map(Free('a) -> Bag('b, 'a, 'c))
+    ))
+  }
+
+  def freeOnce = {
+    val bundle = Bundle('a & 'b, Free('f))
+    val cart = CartState(Bag('a, 'a, 'b))
+    val bundleOnce = bundle(cart)
+    bundleOnce ==== Set(CartState(
+      items = Bag('a, 'a, 'b),
+      paid = Bag('f), 
+      consummed = Map(Free('f) -> Bag('a, 'b))
+    )) &&
+    bundleOnce.flatMap(s => bundle(s)) ==== Set()
   }
 
   def fixedPrice = {
     val bundle = Bundle('a & 'b, Price(BigDecimal(1)))
     val cart = CartState(Bag('a, 'b))
 
-    bundle(cart) ==== Set(CartState(Bag(), Bag('a, 'b), BigDecimal(1)))
+    bundle(cart) ==== Set(CartState(
+      items = Bag(), 
+      paid = Bag('a, 'b), 
+      runningTotal = BigDecimal(1)
+    ))
   }
 
   def orSelectionPrice = {
