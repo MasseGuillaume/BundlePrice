@@ -1,6 +1,10 @@
 package com.boldradius.bundlepricing
 
-trait BundlePricingAlgorithm {
+trait BundlePricing {
+  def minimizeCost(cart: Bag[Product], unitCost: Map[Product, Cost], bundles: Set[Bundle]): Cost
+}
+
+trait BundlePricingAlgorithm extends BundlePricing {
   def minimizeCost(cart: Bag[Product], unitCost: Map[Product, Cost], bundles: Set[Bundle]): Cost = {
     def loop(state: CartState): Cost = {
       val currentCost = state.total(unitCost)
@@ -16,21 +20,30 @@ trait BundlePricingAlgorithm {
   def heuristic(
     states: Set[CartState], 
     unitCost: Map[Product, Cost],
-    eval: CartState => Cost): CartState
+    search: CartState => Cost): CartState
 }
 
 object Exhaustive extends BundlePricingAlgorithm {
   def heuristic(
     states: Set[CartState],
     unitCost: Map[Product, Cost],
-    f: CartState => Cost): CartState = states.minBy(f)
+    search: CartState => Cost): CartState = states.minBy(search)
 }
 
 object Greedy extends BundlePricingAlgorithm {
   def heuristic(
     states: Set[CartState],
     unitCost: Map[Product, Cost],
-    f: CartState => Cost): CartState = states.minBy(_.total(unitCost))
+    search: CartState => Cost): CartState = states.minBy(_.total(unitCost))
+}
+
+class MonteCarlo(rnd: util.Random) extends BundlePricingAlgorithm {
+ def heuristic(
+    states: Set[CartState],
+    unitCost: Map[Product, Cost],
+    search: CartState => Cost): CartState = {
+    states.toVector(rnd.nextInt(states.size))
+  }
 }
 
 /*
@@ -44,3 +57,8 @@ object Greedy extends BundlePricingAlgorithm {
   We may end up with items we didn't want to purchase in the beggining, we discard them
   ex: cart: AAB, bundle A & B => Free C
 */
+// object Grab extends BundlePricing {
+//   def minimizeCost(cart: Bag[Product], unitCost: Map[Product, Cost], bundles: Set[Bundle]): Cost = {
+
+//   }
+// }
