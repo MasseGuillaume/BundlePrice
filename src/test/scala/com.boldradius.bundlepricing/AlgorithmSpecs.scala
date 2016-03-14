@@ -14,35 +14,35 @@ class AlgorithmSpecs extends org.specs2.mutable.Specification {
       Bundle('a & 'a & 'b & 'b, Price(BigDecimal(7))),
       Bundle(2 * ('a | 'b | 'c), Price(BigDecimal(5)))
     )
-    // val smallCart = Bag.fromMap(Map(
-    //   'a -> 8,
-    //   'b -> 2,
-    //   'c -> 3
-    // ))
-    // val smallCartUnitCost = CartState(smallCart).total(unitCost)
-    // s"small cart (Cost: $smallCartUnitCost)" >> {
-    //   "Exhaustive" >> {
-    //     val costExhaustive = Exhaustive.minimizeCost(
-    //       smallCart,
-    //       unitCost,
-    //       bundles
-    //     )
-    //     s"Cost: $costExhaustive" >> {
-    //       costExhaustive must be_<(smallCartUnitCost)  
-    //     }      
-    //   }
+    val smallCart = Bag.fromMap(Map(
+      'a -> 8,
+      'b -> 2,
+      'c -> 3
+    ))
+    val smallCartUnitCost = CartState(smallCart).total(unitCost)
+    s"small cart (Cost: $smallCartUnitCost)" >> {
+      "Exhaustive" >> {
+        val costExhaustive = Exhaustive.minimizeCost(
+          smallCart,
+          unitCost,
+          bundles
+        )
+        s"Cost: $costExhaustive" >> {
+          costExhaustive must be_<(smallCartUnitCost)  
+        }      
+      }
 
-    //   "Greedy" >> {
-    //     val costGreedy = Greedy.minimizeCost(
-    //       smallCart,
-    //       unitCost,
-    //       bundles   
-    //     ) 
-    //     s"Cost: $costGreedy" >> {
-    //       costGreedy must be_<(smallCartUnitCost)  
-    //     }
-    //   }
-    // }
+      "Greedy" >> {
+        val costGreedy = Greedy.minimizeCost(
+          smallCart,
+          unitCost,
+          bundles   
+        ) 
+        s"Cost: $costGreedy" >> {
+          costGreedy must be_<(smallCartUnitCost)  
+        }
+      }
+    }
 
     val largeCart = Bag.fromMap(Map(
       'a -> 50,
@@ -79,7 +79,7 @@ class AlgorithmSpecs extends org.specs2.mutable.Specification {
       // 177
       "MonteCarlo" >> {
         // val rnd = new util.Random(1)
-        val costMonteCarlo = (1 to 2).map{ _ =>
+        val costMonteCarlo = (1 to 100).map{ _ =>
           val rnd = new util.Random(1)
           new MonteCarlo(rnd).minimizeCost(
             largeCart,
