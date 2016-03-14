@@ -32,14 +32,14 @@ class AlgorithmSpecs extends org.specs2.mutable.Specification {
         }      
       }
 
-      "GRAB" >> {
-        val costGRAB = GRAB.minimizeCost(
+      "Greedy" >> {
+        val costGreedy = Greedy.minimizeCost(
           smallCart,
           unitCost,
           bundles   
         ) 
-        s"Cost: $costGRAB" >> {
-          costGRAB must be_<(smallCartUnitCost)  
+        s"Cost: $costGreedy" >> {
+          costGreedy must be_<(smallCartUnitCost)  
         }
       }
     }
@@ -62,14 +62,14 @@ class AlgorithmSpecs extends org.specs2.mutable.Specification {
       //     costExhaustive must be_<(smallCartUnitCost)  
       //   }      
       // }
-      "GRAB" >> {
-        val costGRAB = GRAB.minimizeCost(
+      "Greedy" >> {
+        val costGreedy = Greedy.minimizeCost(
           largeCart,
           unitCost,
           bundles   
         ) 
-        s"Cost: $costGRAB" >> {
-          costGRAB must be_<(largeCartUnitCost)  
+        s"Cost: $costGreedy" >> {
+          costGreedy must be_<(largeCartUnitCost)  
         }
       }
     }
