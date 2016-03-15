@@ -28,7 +28,10 @@ scalacOptions in (Compile, console) --= Seq(
   "-Ywarn-unused-import"
 )
 
-libraryDependencies += "org.specs2" %% "specs2-core" % "3.6.4" % "test"
+libraryDependencies ++= Seq(
+  "org.scalanlp" %% "breeze-natives" % "0.12",
+  "org.specs2"   %% "specs2-core"    % "3.6.4" % "test"
+)
 
 wartremoverErrors ++= Warts.allBut(Wart.DefaultArguments, Wart.Throw)
 
